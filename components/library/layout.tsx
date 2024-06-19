@@ -1,12 +1,13 @@
 "use client";
-import React from "react";
+import React, { Children, useState } from "react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import Link from "next/link";
+import { isEmpty } from "lodash";
+import { cn } from "@/lib/utils";
 
 const NestedAccordion = ({
   data,
@@ -15,16 +16,47 @@ const NestedAccordion = ({
   data: Data;
   level?: number;
 }) => {
+  const [exercise, setExercise] = useState<string>("");
   return (
-    <Accordion type="single" collapsible className={`w-full pl-${level * 4}`}>
+    <Accordion
+      type="single"
+      collapsible
+      className={`w-full pl-${level * 4} flex flex-col gap-2  ${
+        level === 0 && "border p-4 rounded-lg"
+      }`}
+    >
       {data.map((item, index) => (
-        <AccordionItem key={item.value} value={item.value}>
-          <AccordionTrigger>{item.trigger}</AccordionTrigger>
+        <AccordionItem
+          key={index}
+          value={item.value}
+          className={cn("gap-2 flex flex-col")}
+        >
+          <AccordionTrigger className="rounded-lg p-2 hover:bg-muted data-[state=open]:bg-primary">
+            {item.value}
+          </AccordionTrigger>
           <AccordionContent>
-            {item.content}
-            {item.children && item.children.length > 0 && (
-              <NestedAccordion data={item.children} level={level + 1} />
-            )}
+            {/* {!isEmpty(item.contents) && item.contents && (
+              <div className="flex flex-col gap-2 ">
+                {item.contents.map(({ id, content }) => (
+                  <div
+                    key={id}
+                    onClick={() => setExercise(id)}
+                    className={cn(
+                      "hover:bg-muted rounded-lg p-2 text-center cursor-pointer",
+                      `${id === exercise && "bg-primary"}`
+                    )}
+                  >
+                    {content}
+                  </div>
+                ))}
+              </div>
+            )} */}
+            <>
+              {item.children ||
+                (!isEmpty(item.children) && (
+                  <NestedAccordion data={item.children} level={level + 1} />
+                ))}
+            </>
           </AccordionContent>
         </AccordionItem>
       ))}
@@ -33,58 +65,43 @@ const NestedAccordion = ({
 };
 
 type Data = typeof data;
-
 const data = [
   {
-    value: "item-1",
-    trigger: "Grammar",
+    value: "Grammar",
     children: [
       {
-        value: "item-1-1",
-        trigger: "Tense",
-        content: (
-          <div className="flex flex-col gap-2">
-            <Link href="/library/exercise/grammar/tense">Simple Tense</Link>
-          </div>
-        ),
-        children: [],
+        value: "A1 Elementary",
+        children: [
+          {
+            value: "Present Simple",
+          },
+          {
+            value: "This, That, These, Those",
+          },
+          {
+            value: "Possessive adjectives and subject pronouns",
+          },
+        ],
       },
       {
-        value: "item-1-2",
-        trigger: "Is it styled?",
-        content: <div className="flex flex-col gap-2"></div>,
-        children: [],
+        value: "A2 Pre-intermediate",
       },
       {
-        value: "item-1-3",
-        trigger: "Is it animated?",
-        content: <div className="flex flex-col gap-2"></div>,
-        children: [],
+        value: "B1 Intermediate",
+      },
+      {
+        value: "B1+ Upper-intermediate",
+      },
+      {
+        value: "B2Pre-advanced",
       },
     ],
   },
-  {
-    value: "item-2",
-    trigger: "Is it styled?",
-    content: (
-      <div>
-        Yes. It comes with default styles that matches the other
-        components&apos; aesthetic.
-      </div>
-    ),
-    children: [],
-  },
-  {
-    value: "item-3",
-    trigger: "Is it animated?",
-    content: (
-      <div>
-        Yes. It&apos;s animated by default, but you can disable it if you
-        prefer.
-      </div>
-    ),
-    children: [],
-  },
+  { value: "Vocabulary", children: [] },
+  { value: "Listening", children: [] },
+  { value: "Reading", children: [] },
+  { value: "Writing", children: [] },
+  { value: "Exams", children: [] },
 ];
 function NavSidebar() {
   return (
