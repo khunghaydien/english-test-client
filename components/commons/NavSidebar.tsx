@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React from "react";
 import {
   Accordion,
   AccordionContent,
@@ -9,13 +9,14 @@ import {
 import { isEmpty } from "lodash";
 import { cn } from "@/lib/utils";
 import { useLibraryStore } from "@/stores/libraryStore";
+import { INavSidebar } from "@/app/(module)/library/layout";
 
 const NestedAccordion = ({
   data,
   level = 0,
   breadcrumb = [],
 }: {
-  data: Data;
+  data: INavSidebar;
   level?: number;
   breadcrumb?: string[];
 }) => {
@@ -25,7 +26,7 @@ const NestedAccordion = ({
     <Accordion
       type="single"
       collapsible
-      className={`w-full pl-${level * 4} flex flex-col gap-2  ${
+      className={`w-full pl-${level * 4} flex flex-col gap-2  text-sm ${
         level === 0 && "border p-4 rounded-lg"
       }`}
     >
@@ -51,7 +52,7 @@ const NestedAccordion = ({
             {!isEmpty(children) && (
               <>
                 <AccordionTrigger
-                  className="rounded-lg p-2 hover:bg-muted data-[state=open]:bg-primary"
+                  className="rounded-lg p-2 hover:bg-muted data-[state=open]:bg-secondary"
                   onClick={() => setBreadcrumb([...breadcrumb, skill])}
                 >
                   {skill}
@@ -72,53 +73,7 @@ const NestedAccordion = ({
   );
 };
 
-type Data = typeof data;
-const data = [
-  {
-    skill: "Grammar",
-    children: [
-      {
-        skill: "A1 Elementary",
-        children: [
-          {
-            skill: "Present Simple",
-            children: [],
-          },
-          {
-            skill: "This, That, These, Those",
-            children: [],
-          },
-          {
-            skill: "Possessive adjectives and subject pronouns",
-            children: [],
-          },
-        ],
-      },
-      {
-        skill: "A2 Pre-intermediate",
-        children: [],
-      },
-      {
-        skill: "B1 Intermediate",
-        children: [],
-      },
-      {
-        skill: "B1+ Upper-intermediate",
-        children: [],
-      },
-      {
-        skill: "B2Pre-advanced",
-        children: [],
-      },
-    ],
-  },
-  { skill: "Vocabulary", children: [] },
-  { skill: "Listening", children: [] },
-  { skill: "Reading", children: [] },
-  { skill: "Writing", children: [] },
-  { skill: "Exams", children: [] },
-];
-function NavSidebar() {
+function NavSidebar({ data }: { data: INavSidebar }) {
   return <NestedAccordion data={data} />;
 }
 
