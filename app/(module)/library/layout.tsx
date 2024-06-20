@@ -1,12 +1,13 @@
-import NavSidebar from "@/components/library/layout";
+"use client";
+import NavSidebar from "@/components/commons/NavSidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 
 function layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex items-start gap-6 w-full">
-      <nav className="w-[200px]">
+      <nav className="w-[300px]">
         <NavSidebar />
       </nav>
       <main>
