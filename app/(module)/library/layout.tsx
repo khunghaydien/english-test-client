@@ -1,10 +1,9 @@
 "use client";
 import NavSidebar from "@/components/commons/NavSidebar";
-import { Button } from "@/components/ui/button";
+import RecommendedTest from "@/components/library/RecommenedTest";
 import InputAutoComplete from "@/components/ui/input-auto-complete";
-import SelectSingleAutoComplete, {
-  Option,
-} from "@/components/ui/select-single-auto-complete";
+import SelectMultipleAutoComplete from "@/components/ui/select-multiple-auto-complete";
+import { Option } from "@/components/ui/select-single-auto-complete";
 import React, { ReactNode, useState } from "react";
 export type INavSidebar = typeof data;
 const data = [
@@ -67,33 +66,39 @@ const options = [
   },
 ];
 function layout({ children }: { children: ReactNode }) {
-  const [selected, setSelected] = useState<Option>();
+  const [multipleSelected, setMultipleSelected] = useState<Option[]>();
   const handleSearch = (value: string) => {
     console.log(value);
   };
-  const onSelect = (option: Option) => {
-    setSelected(option);
+  const onMultipleSelect = (option: Option[]) => {
+    setMultipleSelected(option);
   };
   return (
-    <div className="flex items-start gap-6 w-full">
+    <div className="flex items-start gap-6 w-full px-4">
       <nav className="w-[300px]">
         <NavSidebar data={data} />
       </nav>
-      <main>
-        <div>
-          <InputAutoComplete
-            suggestions={options}
-            placeholder="Search..."
-            onChange={handleSearch}
-          />
-          <SelectSingleAutoComplete
-            options={options}
-            onSelect={onSelect}
-            selected={selected}
-          />
-          <Button>Filter</Button>
-          <Button>Recomemened</Button>
+      <main className="flex-grow">
+        <div className="flex gap-6 items-start w-full">
+          <div className="max-w-[600px] w-full">
+            <InputAutoComplete
+              className=""
+              suggestions={options}
+              placeholder="Search..."
+              onChange={handleSearch}
+            />
+          </div>
+          <div className="max-w-[600px] w-full">
+            <SelectMultipleAutoComplete
+              className=""
+              options={options}
+              onSelect={onMultipleSelect}
+              selected={multipleSelected}
+              placeholder="filter"
+            />
+          </div>
         </div>
+        <RecommendedTest />
         <div>{children}</div>
       </main>
     </div>

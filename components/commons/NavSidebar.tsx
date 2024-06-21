@@ -41,7 +41,7 @@ const NestedAccordion = ({
               <div
                 className={`rounded-lg p-2 hover:bg-muted cursor-pointer ${
                   tmpbreadcrumb[tmpbreadcrumb.length - 1] === skill
-                    ? "bg-primary hover:bg-primary"
+                    ? "bg-primary hover:bg-primary text-white"
                     : ""
                 }`}
                 onClick={() => setBreadcrumb([...breadcrumb, skill])}

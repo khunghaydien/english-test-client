@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "../ui/input";
-import { cn } from "@/lib/utils";
+import { cn, getTextEllipsis, useClickOutside } from "@/lib/utils";
 import _ from "lodash";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
@@ -27,7 +27,7 @@ const SelectSingleAutoComplete = ({
   const [activeOptionIndex, setActiveOptionIndex] = useState<number>(-1);
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const selectRef = useRef<HTMLDivElement>(null);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setInputValue(value);
@@ -79,6 +79,10 @@ const SelectSingleAutoComplete = ({
     }
   }, []);
 
+  useClickOutside(selectRef, () => {
+    handleBlur();
+  });
+
   const handleBlur = useCallback(() => {
     setShowOptions(false);
     if (selected) setInputValue(selected?.label);
@@ -88,17 +92,17 @@ const SelectSingleAutoComplete = ({
     if (selected) setFilteredOptions(options);
     setShowOptions(true);
   };
+
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" ref={selectRef}>
       <Input
         type="text"
         value={inputValue}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         onClick={handleClick}
-        className={cn(className, "pr-4")}
+        className={cn(className, "pr-4 w-full")}
         placeholder={placeholder}
-        onBlur={handleBlur}
         ref={inputRef}
       />
       <RiArrowDropDownLine
@@ -107,19 +111,19 @@ const SelectSingleAutoComplete = ({
         }`}
       />
       {showOptions && filteredOptions.length > 0 && (
-        <ul className="animate-in fade-in-0 zoom-in-95 absolute top-10 z-10 w-full rounded-lg outline-none bg-white dark:bg-black border">
+        <div className="animate-in fade-in-0 zoom-in-95 absolute top-10 w-full rounded-lg outline-none bg-white dark:bg-black border">
           {filteredOptions.map((option, index) => (
-            <li
+            <div
               key={option.value}
               onClick={() => handleSelect(option)}
-              className={`p-1 rounded-sm hover:bg-muted ${
+              className={`p-1 rounded-sm hover:bg-muted cursor-pointer ${
                 index === activeOptionIndex ? "bg-muted" : ""
               }`}
             >
-              {option.label}
-            </li>
+              {getTextEllipsis(option.label)}
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

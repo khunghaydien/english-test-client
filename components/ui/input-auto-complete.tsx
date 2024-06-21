@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "../ui/input";
-import { cn } from "@/lib/utils";
+import { cn, getTextEllipsis, useClickOutside } from "@/lib/utils";
 import _ from "lodash";
 
 export interface Suggestion {
@@ -19,6 +19,7 @@ const InputAutoComplete = ({
   placeholder,
   onChange,
 }: IInputAutoComplete) => {
+  const inputAutoCompleteRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState<string>("");
   const [filteredSuggestions, setFilteredSuggestions] = useState<Suggestion[]>(
     []
@@ -83,6 +84,8 @@ const InputAutoComplete = ({
         activeSuggestionIndex < filteredSuggestions.length
       ) {
         handleClick(filteredSuggestions[activeSuggestionIndex]);
+      } else {
+        setShowSuggestions(false);
       }
     } else if (event.key === "Escape") {
       setShowSuggestions(false);
@@ -95,14 +98,17 @@ const InputAutoComplete = ({
     }
   }, []);
 
+  useClickOutside(inputAutoCompleteRef, () => {
+    setShowSuggestions(false);
+  });
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" ref={inputAutoCompleteRef}>
       <Input
         type="text"
         value={inputValue}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        className={cn(className)}
+        className={cn(className, "w-full")}
         placeholder={placeholder}
         ref={inputRef}
       />
@@ -116,7 +122,7 @@ const InputAutoComplete = ({
                 index === activeSuggestionIndex ? "bg-muted" : ""
               }`}
             >
-              {suggestion.label}
+              {getTextEllipsis(suggestion.label)}
             </li>
           ))}
         </ul>
