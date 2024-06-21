@@ -1,9 +1,11 @@
 "use client";
-import { AutocompleteExample } from "@/components/commons/AutoSingleSelect";
-import InputAutoComplete from "@/components/commons/InputAutoComplete";
 import NavSidebar from "@/components/commons/NavSidebar";
 import { Button } from "@/components/ui/button";
-import React, { ReactNode } from "react";
+import InputAutoComplete from "@/components/ui/input-auto-complete";
+import SelectSingleAutoComplete, {
+  Option,
+} from "@/components/ui/select-single-auto-complete";
+import React, { ReactNode, useState } from "react";
 export type INavSidebar = typeof data;
 const data = [
   {
@@ -50,27 +52,28 @@ const data = [
   { skill: "Writing", children: [] },
   { skill: "Exams", children: [] },
 ];
-export type IOption = {
-  key: string;
-  value: string;
-};
-
-const options: IOption[] = [
+const options = [
   {
-    key: "1",
-    value: "grammar",
+    value: "1",
+    label: "grammar",
   },
   {
-    key: "2",
-    value: "vacation",
+    value: "2",
+    label: "vacation",
   },
   {
-    key: "3",
-    value: "listening",
+    value: "3",
+    label: "listening",
   },
 ];
 function layout({ children }: { children: ReactNode }) {
-  const handleChange = (value: string) => {};
+  const [selected, setSelected] = useState<Option>();
+  const handleSearch = (value: string) => {
+    console.log(value);
+  };
+  const onSelect = (option: Option) => {
+    setSelected(option);
+  };
   return (
     <div className="flex items-start gap-6 w-full">
       <nav className="w-[300px]">
@@ -78,8 +81,16 @@ function layout({ children }: { children: ReactNode }) {
       </nav>
       <main>
         <div>
-          <InputAutoComplete />
-          <AutocompleteExample />
+          <InputAutoComplete
+            suggestions={options}
+            placeholder="Search..."
+            onChange={handleSearch}
+          />
+          <SelectSingleAutoComplete
+            options={options}
+            onSelect={onSelect}
+            selected={selected}
+          />
           <Button>Filter</Button>
           <Button>Recomemened</Button>
         </div>

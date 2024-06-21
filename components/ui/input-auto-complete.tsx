@@ -1,23 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "../ui/input";
+import { cn } from "@/lib/utils";
+import _ from "lodash";
 
-interface Suggestion {
+export interface Suggestion {
   value: string;
   label: string;
 }
-
-const suggestions: Suggestion[] = [
-  { value: "apple", label: "Apple" },
-  { value: "banana", label: "Banana" },
-  { value: "apricot", label: "Apricot" },
-  { value: "avocado", label: "Avocado" },
-  { value: "blueberry", label: "Blueberry" },
-  { value: "apple", label: "Apple" },
-  { value: "apple", label: "Apple" },
-  { value: "apple", label: "Apple" },
-];
-
-const AutoCompleteInput: React.FC = () => {
+export interface IInputAutoComplete {
+  className?: string;
+  placeholder?: string;
+  suggestions: Suggestion[];
+  onChange: (value: string) => void;
+}
+const InputAutoComplete = ({
+  suggestions,
+  className,
+  placeholder,
+  onChange,
+}: IInputAutoComplete) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [filteredSuggestions, setFilteredSuggestions] = useState<Suggestion[]>(
     []
@@ -27,8 +28,16 @@ const AutoCompleteInput: React.FC = () => {
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const debounceInput = useCallback(
+    _.throttle((value: string) => {
+      onChange(value);
+    }, 300),
+    []
+  );
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
+    debounceInput(value);
     setInputValue(value);
     if (value) {
       const tmpFiltered = suggestions.filter((suggestion) =>
@@ -87,23 +96,23 @@ const AutoCompleteInput: React.FC = () => {
   }, []);
 
   return (
-    <div className="autocomplete-container relative">
+    <div className="relative w-full">
       <Input
         type="text"
         value={inputValue}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        className="autocomplete-input"
-        placeholder="Start typing..."
+        className={cn(className)}
+        placeholder={placeholder}
         ref={inputRef}
       />
       {showSuggestions && filteredSuggestions.length > 0 && (
         <ul className="animate-in fade-in-0 zoom-in-95 absolute top-10 z-10 w-full rounded-lg outline-none bg-white dark:bg-black border">
-          {filteredSuggestions.slice(0, 10).map((suggestion, index) => (
+          {filteredSuggestions.map((suggestion, index) => (
             <li
               key={suggestion.value}
               onClick={() => handleClick(suggestion)}
-              className={`autocomplete-suggestion p-1 rounded-sm ${
+              className={`p-1 rounded-sm ${
                 index === activeSuggestionIndex ? "bg-muted" : ""
               }`}
             >
@@ -116,4 +125,4 @@ const AutoCompleteInput: React.FC = () => {
   );
 };
 
-export default AutoCompleteInput;
+export default InputAutoComplete;
