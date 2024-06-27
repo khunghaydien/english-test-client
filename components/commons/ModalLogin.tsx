@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { SignIn } from "@clerk/nextjs";
 import { Button } from "../ui/button";
 
 function ModalLogin() {
@@ -12,7 +11,7 @@ function ModalLogin() {
         <Button variant={"outline"}>Sign-in</Button>
       </DialogTrigger>
       <DialogContent>
-        <SignIn />
+        Login
       </DialogContent>
     </Dialog>
   );

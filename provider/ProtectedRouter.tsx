@@ -1,23 +1,28 @@
-"use client";
-import { userGeneralStore } from "@/stores/generalStore";
-import { useUserStore } from "@/stores/userStore";
-import React, { ReactNode, useEffect } from "react";
+'use client'
+import { useUserStore } from '@/stores/userStore';
+import { useRouter } from 'next/navigation';
+import React, { ReactNode, useEffect, useState } from 'react'
 
-function ProtectedRouter({ children }: { children: ReactNode }) {
-  const user = useUserStore((state) => state);
-  const setSignIn = userGeneralStore((state) => state.setSignIn);
+function ProtectRouter({ children }: { children: ReactNode }) {
+    const user = useUserStore(state => state)
+    const [mouted, setMounted] = useState(false)
+    const router = useRouter();
 
-  useEffect(() => {
-    if (!user.id) {
-      setSignIn(false);
-    }
-  }, []);
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
-  if (!user.id) {
-    return null;
-  }
+    useEffect(() => {
+        if (!user.id) {
+            router.push('/login')
+        }
+    }, [user])
 
-  return <div>{children}</div>;
+    if (!user.id || !mouted) return null
+
+    return (
+        <div>{children}</div>
+    )
 }
 
-export default ProtectedRouter;
+export default ProtectRouter

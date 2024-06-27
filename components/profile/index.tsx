@@ -16,21 +16,17 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useClerk } from "@clerk/nextjs";
-import { getUser } from "@/services/auth";
 import ModalLogin from "../commons/ModalLogin";
 import ModalRegister from "../commons/ModalRegister";
 import { Skeleton } from "../ui/skeleton";
 
 function Profile() {
   const { image, logout } = useUserStore((state) => state);
-  const { signOut } = useClerk();
   const { setUser, id } = useUserStore((state) => state);
   const [mounted, setMounted] = useState<boolean>(false);
 
   const fetchUser = async () => {
-    const user = await getUser();
-    const userObject = JSON.parse(user);
+    const userObject = {id:'', fullname:'', imageUrl:''};
     setUser({
       id: userObject.id,
       fullname: userObject.fullname,
@@ -112,7 +108,6 @@ function Profile() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => {
-                    signOut();
                     logout();
                   }}
                 >
