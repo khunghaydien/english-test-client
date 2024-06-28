@@ -16,9 +16,9 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import ModalLogin from "../commons/ModalLogin";
-import ModalRegister from "../commons/ModalRegister";
 import { Skeleton } from "../ui/skeleton";
+import Link from "next/link";
+import { Button } from "../ui/button";
 
 function Profile() {
   const { image, logout } = useUserStore((state) => state);
@@ -26,7 +26,7 @@ function Profile() {
   const [mounted, setMounted] = useState<boolean>(false);
 
   const fetchUser = async () => {
-    const userObject = {id:'', fullname:'', imageUrl:''};
+    const userObject = { id: "", fullname: "", imageUrl: "" };
     setUser({
       id: userObject.id,
       fullname: userObject.fullname,
@@ -46,8 +46,16 @@ function Profile() {
         <>
           {!id && (
             <div className="flex gap-4">
-              <ModalLogin />
-              <ModalRegister />
+              <Button asChild variant={"outline"}>
+                <Link href="/login" className="w-[90px]">
+                  Login
+                </Link>
+              </Button>
+              <Button asChild>
+                <Link href="/register" className="w-[90px]">
+                  Register
+                </Link>
+              </Button>
             </div>
           )}
           {id && (

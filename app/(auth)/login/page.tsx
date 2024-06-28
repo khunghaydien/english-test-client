@@ -1,83 +1,125 @@
-'use client'
-import { Input } from '@/components/ui/input'
-import React from 'react'
-import { useFormik } from 'formik'
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
-import { ApolloError, useMutation } from '@apollo/client'
-import { LOGIN_USER } from '@/graphql/mutation/login'
+"use client";
+import { Input } from "@/components/ui/input";
+import React, { useState } from "react";
+import { useFormik } from "formik";
+import { Button } from "@/components/ui/button";
+import { useMutation } from "@apollo/client";
+import { LOGIN_USER } from "@/graphql/mutation/login";
+import { MdEmail } from "react-icons/md";
+import { RiLockPasswordLine } from "react-icons/ri";
+import { FormGroup } from "@/components/ui/form";
+import Link from "next/link";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa6";
+import authValidate from "../_formik";
+import { scrollToFirstErrorMessage } from "@/lib/utils";
+
 const initialValues = {
-    email: '',
-    password: ''
-}
-type ILogin = typeof initialValues
+  email: "",
+  password: "",
+};
+type ILogin = typeof initialValues;
 function page() {
-    const router = useRouter()
-    const formik = useFormik({
-        initialValues,
-        onSubmit: (values) => {
-            handleLogin(values)
-        }
-    })
-    const [loginUser, { loading, data, error }] = useMutation(LOGIN_USER)
-    const handleLogin = async (values: ILogin) => {
-        try {
-            await loginUser({
-                variables: {
-                    email: values.email,
-                    password: values.password
-                }
-            })
-        } catch (error) {
-            if (error instanceof ApolloError) {
-                // Apollo specific error handling
-                if (error.networkError) {
-                    console.error('Network error:', error.networkError);
-                }
-                if (error.graphQLErrors.length > 0) {
-                    console.error('GraphQL errors:', error.graphQLErrors);
-                }
-            } else {
-                // General error handling
-                console.error('An error occurred:', error);
-            }
-        }
+  const { loginValidate } = authValidate();
+  const formik = useFormik({
+    initialValues,
+    validationSchema: loginValidate,
+    onSubmit: (values) => {
+      setTimeout(() => {
+        scrollToFirstErrorMessage();
+      });
+      handleLogin(values);
+    },
+  });
+  const [loginUser, { loading, data, error }] = useMutation(LOGIN_USER);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const handleLogin = async (values: ILogin) => {
+    try {
+      await loginUser({
+        variables: {
+          email: values.email,
+          password: values.password,
+        },
+      });
+    } catch (error) {
+      console.error("An error occurred:", error);
     }
-    const { values, setFieldValue } = formik
-    return (
-        <>
-            <div className="text-center text-[28px] mb-4 font-bold">Login</div>
-            <div className="px-6 pb-1.5 text-[15px]">Email address</div>
-            <form onSubmit={formik.handleSubmit}>
-                <div className="px-6 pb-2">
-                    <Input placeholder='email' type="email" value={values.email} onChange={(e) => setFieldValue('email', e.target.value)}></Input>
-                </div>
-                <div className="px-6 pb-2">
-                    <Input placeholder='password' type="password" value={values.password} onChange={(e) => setFieldValue('password', e.target.value)}></Input>
-                </div>
-                <div className="px-6 text-[12px] text-gray-600">Forgot password?</div>
-                <div className="px-6 mt-6">
-                    <Button
-                        type='submit'
-                        className="w-full text-[17px] font-semibold text-white py-3 rounded-sm"
-                    >
-                        Login
-                    </Button>
-                </div>
-            </form>
-            <div className="absolute flex items-center justify-center py-5 left-0 bottom-0 border-t w-full">
-                <span className="text-[14px] text-gray-600">
-                    Don't have an account?
-                </span>
-                <Button
-                    onClick={() => router.push('/register')}
-                    className="text-[14px] text-[#F02C56] font-semibold pl-1"
-                >
-                    <span>Sign up</span>
-                </Button>
-            </div>
-        </>
-    )
+  };
+  const { values, setFieldValue } = formik;
+
+  return (
+    <>
+      <div className="text-center text-[28px] mb-4 font-bold">Login</div>
+      <form onSubmit={formik.handleSubmit}>
+        <FormGroup>
+          <Input
+            autoComplete="off"
+            required
+            label="Email"
+            startIcon={<MdEmail />}
+            placeholder="email"
+            type="email"
+            value={values.email}
+            error={formik.touched.email && formik.touched.email}
+            errorMessage={formik.errors.email}
+            onChange={(e) => setFieldValue("email", e.target.value)}
+          />
+        </FormGroup>
+        <FormGroup top={6}>
+          <Input
+            autoComplete="off"
+            label="Password"
+            startIcon={<RiLockPasswordLine />}
+            endIcon={
+              showPassword ? (
+                <FaEyeSlash
+                  className="cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowPassword(false);
+                  }}
+                />
+              ) : (
+                <FaEye
+                  className="cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowPassword(true);
+                  }}
+                />
+              )
+            }
+            placeholder="password"
+            type={showPassword ? "text" : "password"}
+            value={values.password}
+            error={formik.touched.password && formik.touched.password}
+            errorMessage={formik.errors.password}
+            onChange={(e) => setFieldValue("password", e.target.value)}
+          />
+        </FormGroup>
+        <FormGroup top={6}>
+          <Link href={"/forgot-password"} className="text-blue-500">
+            Forgot password?
+          </Link>
+        </FormGroup>
+        <FormGroup top={6}>
+          <Button
+            type="submit"
+            className="w-full text-[17px] font-semibold text-white py-3 rounded-sm"
+          >
+            Login
+          </Button>
+        </FormGroup>
+      </form>
+      <div className="absolute flex items-center justify-center py-5 left-0 bottom-0 border-t w-full">
+        <span className="mr-2">Don't have an account?</span>
+        <Link href={"/register"} className="text-blue-500">
+          <span>Sign up</span>
+        </Link>
+      </div>
+    </>
+  );
 }
 
-export default page
+export default page;

@@ -110,6 +110,7 @@ const SelectMultipleAutoComplete = ({
       setFocus(true);
     }
   }, [showOptions]);
+  console.log(inputRef.current?.focus);
   return (
     <div className="relative w-full" ref={selectRef}>
       <div

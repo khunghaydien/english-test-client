@@ -45,3 +45,14 @@ export const getTextEllipsis = (
   if (_text.length === _maxEllipsis) return _text
   return `${_text?.slice(0, _maxEllipsis)}...`
 }
+
+export const scrollToFirstErrorMessage = () => {
+  const firstErrorMessage = document.querySelector(
+    '.error-message-scroll'
+  ) as HTMLElement
+  if (firstErrorMessage) {
+    firstErrorMessage.scrollIntoView({
+      behavior: 'smooth',
+    })
+  }
+}

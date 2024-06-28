@@ -1,6 +1,5 @@
 "use client";
 import NavSidebar from "@/components/commons/NavSidebar";
-import RecommendedTest from "@/components/library/RecommenedTest";
 import InputAutoComplete from "@/components/ui/input-auto-complete";
 import SelectMultipleAutoComplete from "@/components/ui/select-multiple-auto-complete";
 import { Option } from "@/components/ui/select-single-auto-complete";
@@ -98,7 +97,6 @@ function layout({ children }: { children: ReactNode }) {
             />
           </div>
         </div>
-        <RecommendedTest />
         <div>{children}</div>
       </main>
     </div>
