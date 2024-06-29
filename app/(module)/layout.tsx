@@ -1,8 +1,8 @@
 "use client";
 import Logo from "@/components/commons/Logo";
 import { NavigationMenuDemo } from "@/components/commons/MegaMenu";
+import Profile from "@/components/commons/Profile";
 import ThemeSwitcher from "@/components/commons/ThemeSwitcher";
-import Profile from "@/components/profile";
 import React, { ReactNode } from "react";
 
 function layout({ children }: { children: ReactNode }) {

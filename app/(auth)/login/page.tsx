@@ -13,6 +13,8 @@ import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 import authValidate from "../_formik";
 import { scrollToFirstErrorMessage } from "@/lib/utils";
+import { useUserStore } from "@/stores/userStore";
+import { useRouter } from "next/navigation";
 
 const initialValues = {
   email: "",
@@ -21,29 +23,33 @@ const initialValues = {
 type ILogin = typeof initialValues;
 function page() {
   const { loginValidate } = authValidate();
+  const setUser = useUserStore(state => state.setUser)
+  const router = useRouter()
   const formik = useFormik({
     initialValues,
     validationSchema: loginValidate,
-    onSubmit: (values) => {
+    onSubmit: values => {
       setTimeout(() => {
         scrollToFirstErrorMessage();
       });
-      handleLogin(values);
+      handleLogin();
     },
   });
-  const [loginUser, { loading, data, error }] = useMutation(LOGIN_USER);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const handleLogin = async (values: ILogin) => {
+  const [loginUser, { loading, data, error }] = useMutation(LOGIN_USER, {
+    variables: {
+      email: formik.values.email,
+      password: formik.values.password
+    }
+  });
+
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const handleLogin = async () => {
     try {
-      await loginUser({
-        variables: {
-          email: values.email,
-          password: values.password,
-        },
-      });
+      const res = await loginUser();
+      setUser(res.data.login.user)
+      router.push('/')
     } catch (error) {
-      console.error("An error occurred:", error);
     }
   };
   const { values, setFieldValue } = formik;
@@ -105,6 +111,7 @@ function page() {
         </FormGroup>
         <FormGroup top={6}>
           <Button
+            loading={loading}
             type="submit"
             className="w-full text-[17px] font-semibold text-white py-3 rounded-sm"
           >

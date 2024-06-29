@@ -13,7 +13,8 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { RxAvatar } from "react-icons/rx";
 import authValidate from "../_formik";
 import { scrollToFirstErrorMessage } from "@/lib/utils";
-
+import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 const initialValues = {
   email: "",
   fullname: "",
@@ -23,7 +24,7 @@ const initialValues = {
 type IRegister = typeof initialValues;
 function page() {
   const [registerUser, { loading, error, data }] = useMutation(REGISTER_USER);
-
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
@@ -48,12 +49,12 @@ function page() {
           fullname: values.fullname,
         },
       });
-    } catch (error: any) {
-      console.error("An error occurred:", error);
+      router.push('/login')
+    } catch (error) {
     }
   };
-
   const { values, setFieldValue } = formik;
+  
   return (
     <>
       <div className="text-center text-[28px] mb-4 font-bold">Sign up</div>
@@ -154,6 +155,7 @@ function page() {
         </FormGroup>
         <FormGroup top={6}>
           <Button
+            loading={loading}
             type="submit"
             className={
               "w-full text-[17px] font-semibold text-white py-3 rounded-sm"
