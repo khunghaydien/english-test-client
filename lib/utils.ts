@@ -1,3 +1,4 @@
+'use client'
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { MAX_ELLIPSIS } from "./const"
