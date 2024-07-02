@@ -1,9 +1,9 @@
 "use client";
-import Logo from "@/components/commons/Logo";
-import { NavigationMenuDemo } from "@/components/commons/MegaMenu";
-import Profile from "@/components/commons/Profile";
-import ThemeSwitcher from "@/components/commons/ThemeSwitcher";
+import Logo from "@/components/logo-component";
 import React, { ReactNode } from "react";
+import { NavigationMenuDemo } from "./_component/mega-menu";
+import Profile from "@/components/profile-component";
+import ThemeSwitcher from "@/components/theme-switcher";
 
 function layout({ children }: { children: ReactNode }) {
   return (

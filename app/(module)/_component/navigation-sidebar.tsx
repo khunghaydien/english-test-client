@@ -1,15 +1,15 @@
 "use client";
 import React from "react";
+import { isEmpty } from "lodash";
+import { cn } from "@/lib/utils";
+import { useLibraryStore } from "@/stores/libraryStore";
+import { INavSidebar } from "@/app/(module)/library/layout";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion";
-import { isEmpty } from "lodash";
-import { cn } from "@/lib/utils";
-import { useLibraryStore } from "@/stores/libraryStore";
-import { INavSidebar } from "@/app/(module)/library/layout";
+} from "@/components/ui/accordion";
 
 const NestedAccordion = ({
   data,

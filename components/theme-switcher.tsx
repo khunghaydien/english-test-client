@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
-import { Skeleton } from "../ui/skeleton";
+import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
+import { Skeleton } from "./ui/skeleton";
 function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState<boolean>(false);
