@@ -21,10 +21,12 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { useMutation } from "@apollo/client";
 import { LOGOUT_USER } from "@/graphql/mutation/logout";
+import { useRouter } from "next/navigation";
 
 function Profile() {
+  const router = useRouter()
   const [logoutUser] = useMutation(LOGOUT_USER);
-  const { fullname, email, image, bio, id, logout } = useUserStore(
+  const { fullname, image, id, logout } = useUserStore(
     (state) => state
   );
   const [mounted, setMounted] = useState<boolean>(false);
@@ -37,6 +39,7 @@ function Profile() {
     try {
       logout();
       await logoutUser();
+      router.push('/login')
     } catch (error) {
       console.log("something went wrong: ", error);
     }

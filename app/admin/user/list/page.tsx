@@ -1,79 +1,69 @@
 "use client";
 import { CommonTable, TableHeaderColumn } from "@/components/common-table";
-import React, { useEffect, useRef, useState } from "react";
+import { toast } from "@/components/ui/use-toast";
+import { User } from "@/gql/graphql";
+import { DELETE_USER } from "@/graphql/mutation/user";
+import { GET_USERS } from "@/graphql/query/getUsers";
+import { useMutation, useQuery } from "@apollo/client";
+import { MdDelete } from "react-icons/md";
 
-export const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
 export const invoicesColumns: TableHeaderColumn[] = [
   {
-    id: "invoice",
+    id: "id",
     align: "left",
-    label: "Invoice",
+    label: "Id",
     width: 100,
   },
   {
-    id: "paymentStatus",
+    id: "image",
     align: "left",
-    label: "Payment Status",
+    label: "Avatar",
   },
   {
-    id: "totalAmount",
+    id: "fullname",
     align: "left",
-    label: "Total Amount",
+    label: "Fullname",
   },
   {
-    id: "paymentMethod",
+    id: "email",
     align: "left",
-    label: "Payment Method",
-    width: 500,
+    label: "Email",
   },
+  {
+    id: "action",
+    align: 'left',
+    label: "Action"
+  }
 ];
+
 function page() {
+  const { data, refetch } = useQuery(GET_USERS, {})
+  const [deleteUser] = useMutation(DELETE_USER);
+
+  const users = data?.getUsers.map((user: User) => {
+    const handleDeleteUser = async (id: number) => {
+      try {
+        const result = await deleteUser({
+          variables: { id: id.toString() },
+        });
+        toast({
+          title: "Delete User",
+          description: `User ${result.data.deleteUser.fullname} deleted successfully.`,
+          variant: "success",
+        });
+        await refetch()
+      } catch (error) {
+      }
+    }
+    return {
+      ...user,
+      action: <MdDelete className="cursor-pointer" onClick={() => handleDeleteUser(user.id)} />
+    }
+  })
+
   return (
     <div className="w-full">
-      <CommonTable rows={invoices} columns={invoicesColumns} />
+      <CommonTable rows={users} columns={invoicesColumns} />
     </div>
   );
 }

@@ -13,7 +13,6 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { RxAvatar } from "react-icons/rx";
 import authValidate from "../_formik";
 import { scrollToFirstErrorMessage } from "@/lib/utils";
-import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 const initialValues = {
   email: "",
@@ -23,7 +22,7 @@ const initialValues = {
 };
 type IRegister = typeof initialValues;
 function page() {
-  const [registerUser, { loading, error, data }] = useMutation(REGISTER_USER);
+  const [registerUser, { loading}] = useMutation(REGISTER_USER);
   const router = useRouter()
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =

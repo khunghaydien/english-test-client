@@ -36,7 +36,7 @@ function page() {
     },
   });
 
-  const [loginUser, { loading, data, error }] = useMutation(LOGIN_USER, {
+  const [loginUser, { loading }] = useMutation(LOGIN_USER, {
     variables: {
       email: formik.values.email,
       password: formik.values.password

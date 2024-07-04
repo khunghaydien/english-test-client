@@ -68,6 +68,8 @@ export function CommonTable({
   const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
   const tableRef = useRef<HTMLDivElement | null>(null);
   const [mounted, setMounted] = useState(false);
+  console.log(rows);
+  
   const [columnWidths, setColumnWidths] = useState<number[]>(
     columns.map(({ width }) => (width ? width : 250))
   );
