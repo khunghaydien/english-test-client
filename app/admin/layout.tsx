@@ -27,7 +27,7 @@ const data = [
 function layout({ children }: { children: ReactNode }) {
   const pathName = usePathname();
   return (
-    <div className="min-h-[100vh]">
+    <div className="min-h-[100vh] w-full">
       <nav className="w-full flex items-center justify-between px-6 py-4 text-sm rounded-lg border-b-2 border-muted-foreground">
         <Logo />
         <div className="flex items-center gap-6">

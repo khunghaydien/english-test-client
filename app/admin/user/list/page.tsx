@@ -1,7 +1,8 @@
+"use client";
 import { CommonTable, TableHeaderColumn } from "@/components/common-table";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-const invoices = [
+export const invoices = [
   {
     invoice: "INV001",
     paymentStatus: "Paid",
@@ -45,7 +46,7 @@ const invoices = [
     paymentMethod: "Credit Card",
   },
 ];
-const invoicesColumns: TableHeaderColumn[] = [
+export const invoicesColumns: TableHeaderColumn[] = [
   {
     id: "invoice",
     align: "left",
@@ -71,7 +72,7 @@ const invoicesColumns: TableHeaderColumn[] = [
 ];
 function page() {
   return (
-    <div>
+    <div className="w-full">
       <CommonTable rows={invoices} columns={invoicesColumns} />
     </div>
   );

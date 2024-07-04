@@ -1,5 +1,8 @@
 "use client";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { Skeleton } from "./ui/skeleton";
+import { isEmpty } from "lodash";
+import { FaBoxOpen } from "react-icons/fa";
 import {
   Pagination,
   PaginationContent,
@@ -19,11 +22,13 @@ export interface TableHeaderColumn {
   tooltip?: string | ReactNode;
   width?: number;
 }
+
 export interface ICommonTable {
   rows: any;
   columns: TableHeaderColumn[];
   pagination?: TablePaginationProps;
   tableCaption?: string;
+  loading?: boolean;
 }
 
 export interface TablePaginationProps {
@@ -34,55 +39,126 @@ export interface TablePaginationProps {
   onPageSizeChange: (newPageSize: number) => void;
 }
 
+const CommonTableLoading = () => {
+  return (
+    <div className="w-full p-1">
+      {Array.from({ length: 10 }).map((_, index) => (
+        <Skeleton key={index} className="w-full h-[40px] mb-1"></Skeleton>
+      ))}
+    </div>
+  );
+};
+
+const CommonTableNoData = () => {
+  return (
+    <div className="w-full h-[400px] flex items-center justify-center flex-col">
+      <FaBoxOpen className="w-10 h-10" />
+      No data available in table
+    </div>
+  );
+};
+
 export function CommonTable({
   rows,
   columns,
   pagination,
   tableCaption,
+  loading,
 }: ICommonTable) {
-  const onRowClick = (row: any, columnId: string) => {
-    console.log(row, columnId);
+  const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const tableRef = useRef<HTMLDivElement | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [columnWidths, setColumnWidths] = useState<number[]>(
+    columns.map(({ width }) => (width ? width : 250))
+  );
+  const [totalWidth, setTotalWidth] = useState<number>(
+    columnWidths.reduce((acc, value) => acc + value, 0)
+  );
+  const [tableWidth, setTableWidth] = useState<number>(0);
+
+  useEffect(() => {
+    if (tableRef.current) setTableWidth(tableRef.current.offsetWidth);
+    setMounted(true);
+  }, [tableRef]);
+
+  const onMouseDown = (e: React.MouseEvent, index: number) => {
+    const startX = e.clientX;
+    const startWidth = columnRefs.current[index]?.offsetWidth || 0;
+    const handleMouseMove = (e: MouseEvent) => {
+      const delta = e.clientX - startX;
+      const newWidth = startWidth + delta;
+
+      if (newWidth > (columns[index].width || 250)) {
+        const newColumnWidths = columnWidths.map((val, i) =>
+          i === index ? newWidth : val
+        );
+        const totalWidth = newColumnWidths.reduce(
+          (acc, value) => acc + value,
+          0
+        );
+        setColumnWidths(newColumnWidths);
+        setTotalWidth(totalWidth);
+      }
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
-  const gridTemplateColumns = columns
-    .map(({ width }) => (width ? `${width}px` : "1fr"))
-    .join(" ");
+
   return (
-    <>
-      <div className="border border-gray-200 rounded-lg shadow-md overflow-hidden">
-        <div className="p-4 bg-gray-100 text-center font-semibold">
-          {tableCaption}
-        </div>
-        <div className="grid" style={{ gridTemplateColumns }}>
-          {columns.map((column, index) => (
-            <div
-              key={index}
-              className="p-2 border-b border-r border-gray-200 text-center"
-            >
-              {column.label}
-            </div>
-          ))}
-        </div>
-        <div>
-          {rows.map((row: any, rowIndex: number) => (
-            <div
-              key={rowIndex}
-              className="grid"
-              style={{ gridTemplateColumns }}
-            >
-              {columns.map((column, colIndex) => (
+    <div className="w-full relative" ref={tableRef}>
+      {(loading || !mounted) && <CommonTableLoading />}
+      {!loading && mounted && (
+        <div
+          className="overflow-x-auto w-full"
+          style={{ maxWidth: `${tableWidth ? tableWidth + "px" : "100%"}` }}
+        >
+          <div className="w-full" style={{ width: `${totalWidth}px` }}>
+            <div className="flex">
+              {columns.map((column, index) => (
                 <div
-                  key={colIndex}
-                  onClick={() => onRowClick(row, column.id)}
-                  className="p-2 border-b border-r border-gray-200 text-left"
+                  key={index}
+                  className="relative p-2 border border-gray-200 text-center"
+                  style={{ width: `${columnWidths[index]}px` }}
+                  ref={(el) => {
+                    columnRefs.current[index] = el;
+                  }}
                 >
-                  {row[column.id]}
+                  {column.label}
+                  <div
+                    onMouseDown={(e) => onMouseDown(e, index)}
+                    className="absolute right-0 top-0 h-full w-2 cursor-col-resize"
+                    style={{ cursor: "col-resize" }}
+                  />
                 </div>
               ))}
             </div>
-          ))}
+            <div>
+              {isEmpty(rows) && <CommonTableNoData />}
+              {!isEmpty(rows) &&
+                rows.map((row: any, rowIndex: number) => (
+                  <div key={rowIndex} className="flex">
+                    {columns.map((column, colIndex) => (
+                      <div
+                        key={colIndex}
+                        className="p-2 border-l border-b border-r border-gray-200 text-left"
+                        style={{ width: `${columnWidths[colIndex]}px` }}
+                      >
+                        {row[column.id]}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+            </div>
+          </div>
         </div>
-      </div>
-      <Pagination className="w-full flex justify-end">
+      )}
+      <Pagination className="w-full absolute right-0">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious href="#" />
@@ -106,6 +182,6 @@ export function CommonTable({
           </PaginationItem>
         </PaginationContent>
       </Pagination>
-    </>
+    </div>
   );
 }
