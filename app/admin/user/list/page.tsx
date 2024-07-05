@@ -6,6 +6,7 @@ import { DELETE_USER } from "@/graphql/mutation/user";
 import { GET_USERS } from "@/graphql/query/getUsers";
 import { useMutation, useQuery } from "@apollo/client";
 import { MdDelete } from "react-icons/md";
+import ModalUserDetail from "../_component/modal-profile";
 
 export const invoicesColumns: TableHeaderColumn[] = [
   {
@@ -39,9 +40,8 @@ export const invoicesColumns: TableHeaderColumn[] = [
 function page() {
   const { data, refetch } = useQuery(GET_USERS, {})
   const [deleteUser] = useMutation(DELETE_USER);
-
   const users = data?.getUsers.map((user: User) => {
-    const handleDeleteUser = async (id: number) => {
+    const handleDeleteUser = async (id: string) => {
       try {
         const result = await deleteUser({
           variables: { id: id.toString() },
@@ -57,13 +57,17 @@ function page() {
     }
     return {
       ...user,
-      action: <MdDelete className="cursor-pointer" onClick={() => handleDeleteUser(user.id)} />
+      action: <>
+        <MdDelete className="cursor-pointer" onClick={() => handleDeleteUser(user.id)} />
+        <ModalUserDetail type="update"/>
+      </>
     }
   })
 
   return (
     <div className="w-full">
       <CommonTable rows={users} columns={invoicesColumns} />
+
     </div>
   );
 }

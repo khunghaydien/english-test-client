@@ -13,7 +13,7 @@ export const useLibraryStore = create<LibraryState & LibraryAction>()(
             (set) => ({
                 breadcrumb: [],
                 setBreadcrumb: (breadcrumb: string[]) =>
-                    set((state) => ({ breadcrumb })),
+                    set(() => ({ breadcrumb })),
             }),
             { name: 'library-storage' }
         )
