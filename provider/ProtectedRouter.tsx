@@ -1,28 +1,25 @@
-'use client'
-import { useUserStore } from '@/stores/userStore';
-import { useRouter } from 'next/navigation';
-import React, { ReactNode, useEffect, useState } from 'react'
+"use client";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "../stores/userStore";
+import { ReactNode, useEffect } from "react";
 
-function ProtectRouter({ children }: { children: ReactNode }) {
-    const user = useUserStore(state => state)
-    const [mouted, setMounted] = useState(false)
-    const router = useRouter();
+const ProtectedRoute = ({
+  children,
+  allowedRoles,
+}: {
+  children: ReactNode;
+  allowedRoles: string[];
+}) => {
+  const { id } = useUserStore((state) => state);
+  const router = useRouter();
 
-    useEffect(() => {
-        setMounted(true)
-    }, [])
+  useEffect(() => {
+    if (!allowedRoles.includes("") && !id) {
+      router.push("/sign-in");
+    }
+  }, [id, router, allowedRoles]);
 
-    useEffect(() => {
-        if (!user.id) {
-            router.push('/login')
-        }
-    }, [user])
+  return <>{!allowedRoles.includes("") && !id ? null : children}</>;
+};
 
-    if (!user.id || !mouted) return null
-
-    return (
-        <div>{children}</div>
-    )
-}
-
-export default ProtectRouter
+export default ProtectedRoute;

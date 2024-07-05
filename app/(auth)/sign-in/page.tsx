@@ -20,15 +20,15 @@ const initialValues = {
   email: "",
   password: "",
 };
-type ILogin = typeof initialValues;
+
 function page() {
   const { loginValidate } = authValidate();
-  const setUser = useUserStore(state => state.setUser)
-  const router = useRouter()
+  const setUser = useUserStore((state) => state.setUser);
+  const router = useRouter();
   const formik = useFormik({
     initialValues,
     validationSchema: loginValidate,
-    onSubmit: values => {
+    onSubmit: (values) => {
       setTimeout(() => {
         scrollToFirstErrorMessage();
       });
@@ -39,24 +39,23 @@ function page() {
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {
     variables: {
       email: formik.values.email,
-      password: formik.values.password
-    }
+      password: formik.values.password,
+    },
   });
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const handleLogin = async () => {
     try {
       const res = await loginUser();
-      setUser(res.data.login.user)
-      router.push('/')
-    } catch (error) {
-    }
+      setUser(res.data.login.user);
+      router.push("/");
+    } catch (error) {}
   };
   const { values, setFieldValue } = formik;
 
   return (
     <>
-      <div className="text-center text-[28px] mb-4 font-bold">Login</div>
+      <div className="text-center text-[28px] mb-4 font-bold">Sign In</div>
       <form onSubmit={formik.handleSubmit}>
         <FormGroup>
           <Input
@@ -72,7 +71,7 @@ function page() {
             onChange={(e) => setFieldValue("email", e.target.value)}
           />
         </FormGroup>
-        <FormGroup top={6}>
+        <FormGroup top={24}>
           <Input
             autoComplete="off"
             label="Password"
@@ -104,24 +103,25 @@ function page() {
             onChange={(e) => setFieldValue("password", e.target.value)}
           />
         </FormGroup>
-        <FormGroup top={6}>
+        <FormGroup top={24}>
           <Link href={"/forgot-password"} className="text-blue-500">
             Forgot password?
           </Link>
         </FormGroup>
-        <FormGroup top={6}>
+        <FormGroup top={24}>
           <Button
             loading={loading}
+            size={"lg"}
             type="submit"
             className="w-full text-[17px] font-semibold text-white py-3 rounded-sm"
           >
-            Login
+            Sign In
           </Button>
         </FormGroup>
       </form>
       <div className="absolute flex items-center justify-center py-5 left-0 bottom-0 border-t w-full">
         <span className="mr-2">Don't have an account?</span>
-        <Link href={"/register"} className="text-blue-500">
+        <Link href={"/sign-up"} className="text-blue-500">
           <span>Sign up</span>
         </Link>
       </div>

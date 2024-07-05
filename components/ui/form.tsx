@@ -11,7 +11,8 @@ const FormGroup = forwardRef<HTMLDivElement, FormGroupProps>(
       <div
         {...props}
         ref={ref}
-        className={cn("flex w-full items-center", `gap-${gap} mt-${top}`)}
+        style={{ gap: gap, marginTop: top }}
+        className={cn("flex w-full items-center")}
       >
         {children}
       </div>

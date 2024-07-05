@@ -20,7 +20,6 @@ export const useUserStore = create<User & UserAction>()(
                 email: "",
                 bio: "",
                 image: "",
-
                 setUser: (user) => set(user),
                 logout: () => {
                     set({ id: "", fullname: "", email: "", bio: "", image: "" })

@@ -24,11 +24,9 @@ import { LOGOUT_USER } from "@/graphql/mutation/logout";
 import { useRouter } from "next/navigation";
 
 function Profile() {
-  const router = useRouter()
+  const router = useRouter();
   const [logoutUser] = useMutation(LOGOUT_USER);
-  const { fullname, image, id, logout } = useUserStore(
-    (state) => state
-  );
+  const { fullname, image, id, logout } = useUserStore((state) => state);
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -39,7 +37,7 @@ function Profile() {
     try {
       logout();
       await logoutUser();
-      router.push('/login')
+      router.push("/sign-in");
     } catch (error) {
       console.log("something went wrong: ", error);
     }
@@ -52,13 +50,13 @@ function Profile() {
           {!id && (
             <div className="flex gap-4">
               <Button asChild variant={"outline"}>
-                <Link href="/login" className="w-[90px]">
-                  Login
+                <Link href="/sign-in" className="w-[90px]">
+                  Sign in
                 </Link>
               </Button>
               <Button asChild>
-                <Link href="/register" className="w-[90px]">
-                  Register
+                <Link href="/sign-up" className="w-[90px]">
+                  Sign up
                 </Link>
               </Button>
             </div>

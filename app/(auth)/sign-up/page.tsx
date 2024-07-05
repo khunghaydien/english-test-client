@@ -14,6 +14,7 @@ import { RxAvatar } from "react-icons/rx";
 import authValidate from "../_formik";
 import { scrollToFirstErrorMessage } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import OtherSignIn from "../_component/other-sign-in";
 const initialValues = {
   email: "",
   fullname: "",
@@ -22,8 +23,8 @@ const initialValues = {
 };
 type IRegister = typeof initialValues;
 function page() {
-  const [registerUser, { loading}] = useMutation(REGISTER_USER);
-  const router = useRouter()
+  const [registerUser, { loading }] = useMutation(REGISTER_USER);
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
@@ -48,12 +49,11 @@ function page() {
           fullname: values.fullname,
         },
       });
-      router.push('/login')
-    } catch (error) {
-    }
+      router.push("/sign-in");
+    } catch (error) {}
   };
   const { values, setFieldValue } = formik;
-  
+
   return (
     <>
       <div className="text-center text-[28px] mb-4 font-bold">Sign up</div>
@@ -72,7 +72,7 @@ function page() {
             onChange={(e) => setFieldValue("email", e.target.value)}
           />
         </FormGroup>
-        <FormGroup top={6}>
+        <FormGroup top={24}>
           <Input
             autoComplete="off"
             required
@@ -86,7 +86,7 @@ function page() {
             onChange={(e) => setFieldValue("fullname", e.target.value)}
           />
         </FormGroup>
-        <FormGroup top={6}>
+        <FormGroup top={24}>
           <Input
             autoComplete="off"
             label="Password"
@@ -118,7 +118,7 @@ function page() {
             onChange={(e) => setFieldValue("password", e.target.value)}
           />
         </FormGroup>
-        <FormGroup top={6}>
+        <FormGroup top={24}>
           <Input
             autoComplete="off"
             label="Confirm password"
@@ -152,8 +152,9 @@ function page() {
             onChange={(e) => setFieldValue("confirmPassword", e.target.value)}
           />
         </FormGroup>
-        <FormGroup top={6}>
+        <FormGroup top={24}>
           <Button
+            size={"lg"}
             loading={loading}
             type="submit"
             className={
@@ -166,8 +167,8 @@ function page() {
       </form>
       <div className="absolute flex items-center justify-center py-5 left-0 bottom-0 border-t w-full">
         <span className="mr-2">Have an account?</span>
-        <Link href={"/login"} className="text-blue-500">
-          <span>Login</span>
+        <Link href={"/sign-in"} className="text-blue-500">
+          <span>Sign In</span>
         </Link>
       </div>
     </>
