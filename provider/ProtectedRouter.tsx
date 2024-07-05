@@ -2,7 +2,6 @@
 import { useRouter } from "next/navigation";
 import { useUserStore } from "../stores/userStore";
 import { ReactNode, useEffect } from "react";
-
 const ProtectedRoute = ({
   children,
   allowedRoles,
@@ -12,7 +11,6 @@ const ProtectedRoute = ({
 }) => {
   const { id } = useUserStore((state) => state);
   const router = useRouter();
-
   useEffect(() => {
     if (!allowedRoles.includes("") && !id) {
       router.push("/sign-in");
