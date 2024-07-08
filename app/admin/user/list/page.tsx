@@ -32,13 +32,13 @@ export const invoicesColumns: TableHeaderColumn[] = [
   },
   {
     id: "action",
-    align: 'left',
-    label: "Action"
-  }
+    align: "left",
+    label: "Action",
+  },
 ];
 
 function page() {
-  const { data, refetch } = useQuery(GET_USERS, {})
+  const { data, refetch } = useQuery(GET_USERS, {});
   const [deleteUser] = useMutation(DELETE_USER);
   const users = data?.getUsers.map((user: User) => {
     const handleDeleteUser = async (id: string) => {
@@ -51,23 +51,26 @@ function page() {
           description: `User ${result.data.deleteUser.fullname} deleted successfully.`,
           variant: "success",
         });
-        await refetch()
-      } catch (error) {
-      }
-    }
+        await refetch();
+      } catch (error) {}
+    };
     return {
       ...user,
-      action: <>
-        <MdDelete className="cursor-pointer" onClick={() => handleDeleteUser(user.id)} />
-        <ModalUserDetail type="update"/>
-      </>
-    }
-  })
+      action: (
+        <>
+          <MdDelete
+            className="cursor-pointer"
+            onClick={() => handleDeleteUser(user.id)}
+          />
+          <ModalUserDetail type="update" />
+        </>
+      ),
+    };
+  });
 
   return (
     <div className="w-full">
       <CommonTable rows={users} columns={invoicesColumns} />
-
     </div>
   );
 }

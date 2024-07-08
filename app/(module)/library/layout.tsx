@@ -1,54 +1,26 @@
 "use client";
+import NavSidebar from "@/components/navigation-sidebar";
 import InputAutoComplete from "@/components/ui/input-auto-complete";
-import SelectMultipleAutoComplete from "@/components/ui/select-multiple-auto-complete";
 import { Option } from "@/components/ui/select-single-auto-complete";
 import React, { ReactNode, useState } from "react";
-import NavSidebar from "../_component/navigation-sidebar";
 export type INavSidebar = typeof data;
 const data = [
   {
-    skill: "Grammar",
+    label: "Grammar",
+    href: "/grammar/user",
     children: [
       {
-        skill: "A1 Elementary",
-        children: [
-          {
-            skill: "Present Simple",
-            children: [],
-          },
-          {
-            skill: "This, That, These, Those",
-            children: [],
-          },
-          {
-            skill: "Possessive adjectives and subject pronouns",
-            children: [],
-          },
-        ],
-      },
-      {
-        skill: "A2 Pre-intermediate",
+        label: "A1 Elementary",
+        href: "/grammar/user/dashboard",
         children: [],
       },
       {
-        skill: "B1 Intermediate",
-        children: [],
-      },
-      {
-        skill: "B1+ Upper-intermediate",
-        children: [],
-      },
-      {
-        skill: "B2Pre-advanced",
+        label: "List",
+        href: "/grammar/user/list",
         children: [],
       },
     ],
   },
-  { skill: "Vocabulary", children: [] },
-  { skill: "Listening", children: [] },
-  { skill: "Reading", children: [] },
-  { skill: "Writing", children: [] },
-  { skill: "Exams", children: [] },
 ];
 const options = [
   {
@@ -65,12 +37,8 @@ const options = [
   },
 ];
 function layout({ children }: { children: ReactNode }) {
-  const [multipleSelected, setMultipleSelected] = useState<Option[]>();
   const handleSearch = (value: string) => {
     console.log(value);
-  };
-  const onMultipleSelect = (option: Option[]) => {
-    setMultipleSelected(option);
   };
   return (
     <div className="flex items-start gap-6 w-full px-4">
@@ -85,15 +53,6 @@ function layout({ children }: { children: ReactNode }) {
               suggestions={options}
               placeholder="Search..."
               onChange={handleSearch}
-            />
-          </div>
-          <div className="max-w-[600px] w-full">
-            <SelectMultipleAutoComplete
-              className=""
-              options={options}
-              onSelect={onMultipleSelect}
-              selected={multipleSelected}
-              placeholder="filter"
             />
           </div>
         </div>

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { INavSidebar } from "../layout";
+import { INavSidebar } from "../app/admin/layout";
 
 const NestedAccordion = ({
   data,

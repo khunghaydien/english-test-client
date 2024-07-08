@@ -110,12 +110,12 @@ const SelectMultipleAutoComplete = ({
       setFocus(true);
     }
   }, [showOptions]);
-  console.log(inputRef.current?.focus);
+
   return (
     <div className="relative w-full" ref={selectRef}>
       <div
         onClick={handleClick}
-        className={`flex gap-1 border w-full rounded-lg flex-wrap items-center min-h-[36px] pl-2 pr-4 py-1 ${
+        className={`flex gap-1 border w-full rounded-lg flex-wrap items-center min-h-[40px] pl-2 pr-4 py-1 ${
           focus ? "border-ring" : ""
         }`}
       >
