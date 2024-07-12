@@ -23,6 +23,32 @@ const data = [
       },
     ],
   },
+  {
+    label: "Role",
+    href: "/admin/role",
+    children: [],
+  },
+  {
+    label: "Library",
+    href: "/admin/library",
+    children: [
+      {
+        label: "Dashboard",
+        href: "/admin/library/dashboard",
+        children: [],
+      },
+      {
+        label: "Exercise",
+        href: "/admin/library/exercise",
+        children: [],
+      },
+      {
+        label: "Exam",
+        href: "/admin/library/exam",
+        children: [],
+      },
+    ],
+  },
 ];
 function layout({ children }: { children: ReactNode }) {
   return (

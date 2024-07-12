@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -23,13 +22,27 @@ const titleProfile = {
   view: "View your profile",
   create: "Create your profile",
 };
+
+const triggerProfile = {
+  update: (
+    <Button className="flex gap-2 items-center">
+      <FaPen className="cursor-pointer" /> Update profile
+    </Button>
+  ),
+  view: (
+    <Button className="flex gap-2 items-center">
+      <FaPen className="cursor-pointer" /> View profile
+    </Button>
+  ),
+  create: (
+    <Button className="flex gap-2 items-center">
+      <FaPen className="cursor-pointer" /> Create profile
+    </Button>
+  ),
+};
 function ModalProfile({ type }: IModalProfile) {
   const { updatedAt, createdAt, password, id, fullname, email, bio, image } =
     useUserStore((state) => state);
-
-  const title = useMemo(() => {
-    return titleProfile[type];
-  }, [type]);
 
   const formik = useFormik({
     initialValues: {
@@ -48,12 +61,10 @@ function ModalProfile({ type }: IModalProfile) {
   const { values, touched, errors, setFieldValue } = formik;
   return (
     <Dialog>
-      <DialogTrigger>
-        <FaPen className="cursor-pointer" />
-      </DialogTrigger>
+      <DialogTrigger>{triggerProfile[type]}</DialogTrigger>
       <DialogContent className="min-w-[900px]">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle>{titleProfile[type]}</DialogTitle>
         </DialogHeader>
         <div className="flex gap-6 items-center mt-3">
           <Avatar>

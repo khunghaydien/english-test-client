@@ -1,7 +1,7 @@
 "use client";
+import Exercise, { IExercise } from "@/components/exercise";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import React from "react";
-import Exercise, { IExercise } from "../../_component/exercise";
 const exercise: IExercise = {
   id: "1",
   construction: "",

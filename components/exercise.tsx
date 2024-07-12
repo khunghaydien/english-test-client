@@ -35,7 +35,7 @@ const Exercise = ({ construction, type, questions }: IExercise) => {
           ({ question, answers, questionNumber }, questionIndex) => (
             <div key={questionIndex} className="flex flex-col gap-3">
               <div className="flex flex-wrap gap-1">
-                <div className="flex items-center justify-center border border-primary rounded-full w-[24px] h-[24px]">
+                <div className="flex items-center justify-center border border-blue-500 rounded-full w-[24px] h-[24px]">
                   {questionNumber}
                 </div>
                 <div>{question}</div>

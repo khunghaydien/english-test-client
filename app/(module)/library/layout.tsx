@@ -1,8 +1,7 @@
 "use client";
 import NavSidebar from "@/components/navigation-sidebar";
 import InputAutoComplete from "@/components/ui/input-auto-complete";
-import { Option } from "@/components/ui/select-single-auto-complete";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 export type INavSidebar = typeof data;
 const data = [
   {

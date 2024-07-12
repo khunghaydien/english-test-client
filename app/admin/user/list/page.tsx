@@ -7,13 +7,14 @@ import { GET_USERS } from "@/graphql/query/getUsers";
 import { useMutation, useQuery } from "@apollo/client";
 import { MdDelete } from "react-icons/md";
 import ModalUserDetail from "../_component/modal-profile";
+import { Button } from "@/components/ui/button";
 
 export const invoicesColumns: TableHeaderColumn[] = [
   {
     id: "id",
     align: "left",
     label: "Id",
-    width: 100,
+    width: 400,
   },
   {
     id: "image",
@@ -32,8 +33,9 @@ export const invoicesColumns: TableHeaderColumn[] = [
   },
   {
     id: "action",
-    align: "left",
+    align: "center",
     label: "Action",
+    width: 350,
   },
 ];
 
@@ -57,13 +59,17 @@ function page() {
     return {
       ...user,
       action: (
-        <>
-          <MdDelete
-            className="cursor-pointer"
-            onClick={() => handleDeleteUser(user.id)}
-          />
+        <div className="flex gap-3">
           <ModalUserDetail type="update" />
-        </>
+          <Button
+            variant={"outline"}
+            onClick={() => handleDeleteUser(user.id)}
+            className="flex gap-2 items-center"
+          >
+            <MdDelete />
+            Delete user
+          </Button>
+        </div>
       ),
     };
   });
