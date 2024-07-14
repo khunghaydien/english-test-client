@@ -11,15 +11,15 @@ function ThemeSwitcher() {
     setMounted(true);
   }, []);
   return (
-    <Tabs defaultValue={theme}>
+    <Tabs defaultValue={theme ?? 'dark'}>
       <TabsList className="border">
         {mounted && (
           <>
             <TabsTrigger value="light" onClick={() => setTheme("light")}>
-              <SunIcon className="h-[1.2rem w-[1.2rem]"></SunIcon>
+              <SunIcon className="h-[1.2rem w-[1.2rem]" ></SunIcon>
             </TabsTrigger>
             <TabsTrigger value="dark" onClick={() => setTheme("dark")}>
-              <MoonIcon className="h-[1.2rem w-[1.2rem] rotate-90 transition-none dark:rotate-0"></MoonIcon>
+              <MoonIcon className="h-[1.2rem w-[1.2rem] rotate-90 transition-none dark:rotate-0" ></MoonIcon>
             </TabsTrigger>
           </>
         )}

@@ -54,13 +54,13 @@ function page() {
           variant: "success",
         });
         await refetch();
-      } catch (error) {}
+      } catch (error) { }
     };
     return {
       ...user,
       action: (
         <div className="flex gap-3">
-          <ModalUserDetail type="update" />
+          <ModalUserDetail type="view" />
           <Button
             variant={"outline"}
             onClick={() => handleDeleteUser(user.id)}
@@ -76,6 +76,7 @@ function page() {
 
   return (
     <div className="w-full">
+      <ModalUserDetail type="create" />
       <CommonTable rows={users} columns={invoicesColumns} />
     </div>
   );

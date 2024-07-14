@@ -1,55 +1,122 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as TabsPrimitive from "@radix-ui/react-tabs"
+import React, { useState, useCallback, createContext, useContext, ReactNode, useRef, useEffect, useTransition } from "react";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/lib/utils"
+interface TabsContextType {
+  value: string;
+  setValue: (value: string) => void;
+  isPending: boolean;
+}
 
-const Tabs = TabsPrimitive.Root
+const TabsContext = createContext<TabsContextType | undefined>(undefined);
 
-const TabsList = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.List
+interface TabsProps {
+  children: ReactNode;
+  defaultValue: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
+}
+
+interface TabsListProps {
+  children: ReactNode;
+  className?: string;
+}
+
+interface TabsTriggerProps {
+  children: ReactNode;
+  value: string;
+  className?: string;
+  onClick?: () => void
+}
+
+interface TabsContentProps {
+  children: ReactNode;
+  value: string;
+  className?: string;
+}
+
+const Tabs: React.FC<TabsProps> = ({ children, defaultValue, value: controlledValue, onValueChange }) => {
+  const [value, setValue] = useState<string>(defaultValue);
+  const [isPending, startTransition] = useTransition();
+
+  const handleChange = useCallback(
+    (newValue: string) => {
+      startTransition(() => {
+        if (controlledValue === undefined) {
+          setValue(newValue);
+        }
+        onValueChange?.(newValue);
+      });
+    },
+    [controlledValue, onValueChange]
+  );
+
+  const currentValue = controlledValue !== undefined ? controlledValue : value;
+
+  return (
+    <TabsContext.Provider value={{ value: currentValue, setValue: handleChange, isPending }}>
+      {children}
+    </TabsContext.Provider>
+  );
+};
+
+const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(({ children, className }, ref) => (
+  <div
     ref={ref}
-    className={cn(
-      "inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground",
-      className
-    )}
-    {...props}
-  />
-))
-TabsList.displayName = TabsPrimitive.List.displayName
+    className={cn("inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground", className)}
+  >
+    {children}
+  </div>
+));
+TabsList.displayName = "TabsList";
 
-const TabsTrigger = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow",
-      className
-    )}
-    {...props}
-  />
-))
-TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
+const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(({ children, value, className, onClick }, ref) => {
+  const context = useContext(TabsContext);
+  if (!context) {
+    throw new Error("TabsTrigger must be used within a Tabs component");
+  }
 
-const TabsContent = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Content
-    ref={ref}
-    className={cn(
-      "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      className
-    )}
-    {...props}
-  />
-))
-TabsContent.displayName = TabsPrimitive.Content.displayName
+  const { value: selectedValue, setValue, isPending } = context;
 
-export { Tabs, TabsList, TabsTrigger, TabsContent }
+  return (
+    <button
+      ref={ref}
+      className={cn(
+        "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+        selectedValue === value ? "bg-background text-foreground shadow" : "",
+        isPending ? "bg-muted-foreground text-foreground shadow" : "",
+        className
+      )}
+      onClick={() => {
+        !!onClick && onClick()
+        setValue(value)
+      }}
+    >
+      {children}
+    </button>
+  );
+});
+TabsTrigger.displayName = "TabsTrigger";
+
+const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(({ children, value, className }, ref) => {
+  const context = useContext(TabsContext);
+  if (!context) {
+    throw new Error("TabsContent must be used within a Tabs component");
+  }
+
+  const { value: selectedValue } = context;
+
+  return (
+    <div
+      ref={ref}
+      className={cn("mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)}
+      hidden={selectedValue !== value}
+    >
+      {children}
+    </div>
+  );
+});
+TabsContent.displayName = "TabsContent";
+
+export { Tabs, TabsList, TabsTrigger, TabsContent };

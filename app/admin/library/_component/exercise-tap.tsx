@@ -3,7 +3,7 @@ import ExerciseGroupCard from "./exercise-group-card";
 import ExerciseCard from "./exercise-card";
 export function Exercise() {
   return (
-    <Tabs defaultValue="group" className="w-full">
+    <Tabs defaultValue="group">
       <TabsList className="grid w-[500px] grid-cols-2">
         <TabsTrigger value="group">Exercise Group Information</TabsTrigger>
         <TabsTrigger value="exercise">Exercise Information</TabsTrigger>

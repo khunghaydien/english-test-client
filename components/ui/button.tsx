@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { ImSpinner2 } from "react-icons/im";
@@ -48,9 +47,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     { className, variant, size, asChild = false, loading, children, ...props },
     ref
   ) => {
-    const Comp = asChild ? Slot : "button";
     return (
-      <Comp
+      <button
         className={cn(
           buttonVariants({ variant, size, className }),
           loading && "cursor-wait"
@@ -60,7 +58,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading ? <ImSpinner2 className="animate-spin w-5 h-5" /> : children}
-      </Comp>
+      </button>
     );
   }
 );

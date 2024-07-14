@@ -8,12 +8,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { FaPlus } from "react-icons/fa";
 import { FormGroup } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useUserStore } from "@/stores/userStore";
 import { useFormik } from "formik";
-import React, { useMemo } from "react";
+import React from "react";
 import { FaPen } from "react-icons/fa";
+import { FaStreetView } from "react-icons/fa6";
+
 interface IModalProfile {
   type: "update" | "view" | "create";
 }
@@ -31,18 +34,19 @@ const triggerProfile = {
   ),
   view: (
     <Button className="flex gap-2 items-center">
-      <FaPen className="cursor-pointer" /> View profile
+      <FaStreetView className="cursor-pointer" /> View profile
     </Button>
   ),
   create: (
     <Button className="flex gap-2 items-center">
-      <FaPen className="cursor-pointer" /> Create profile
+      <FaPlus className="cursor-pointer" /> Create profile
     </Button>
   ),
 };
 function ModalProfile({ type }: IModalProfile) {
   const { updatedAt, createdAt, password, id, fullname, email, bio, image } =
     useUserStore((state) => state);
+  
 
   const formik = useFormik({
     initialValues: {
@@ -58,7 +62,7 @@ function ModalProfile({ type }: IModalProfile) {
     onSubmit: () => {},
   });
 
-  const { values, touched, errors, setFieldValue } = formik;
+  const { values, setFieldValue } = formik;
   return (
     <Dialog>
       <DialogTrigger>{triggerProfile[type]}</DialogTrigger>

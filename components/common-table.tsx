@@ -3,15 +3,6 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { isEmpty } from "lodash";
 import { FaBoxOpen } from "react-icons/fa";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "./ui/pagination";
 
 export interface TableHeaderColumn {
   id: string;
@@ -61,15 +52,11 @@ const CommonTableNoData = () => {
 export function CommonTable({
   rows,
   columns,
-  pagination,
-  tableCaption,
   loading,
 }: ICommonTable) {
   const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
   const tableRef = useRef<HTMLDivElement | null>(null);
   const [mounted, setMounted] = useState(false);
-  console.log(rows);
-  
   const [columnWidths, setColumnWidths] = useState<number[]>(
     columns.map(({ width }) => (width ? width : 250))
   );
@@ -78,8 +65,28 @@ export function CommonTable({
   );
   const [tableWidth, setTableWidth] = useState<number>(0);
 
+  const updateTableWidth = () => {
+    if (tableRef.current) {
+      setTableWidth(tableRef.current.offsetWidth);
+    }
+  };
+
   useEffect(() => {
-    if (tableRef.current) setTableWidth(tableRef.current.offsetWidth);
+    updateTableWidth(); 
+
+    const handleResize = () => {
+      updateTableWidth();
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    updateTableWidth()
     setMounted(true);
   }, [tableRef]);
 
@@ -160,30 +167,6 @@ export function CommonTable({
           </div>
         </div>
       )}
-      <Pagination className="w-full absolute right-0">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#" isActive>
-              2
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">3</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
     </div>
   );
 }
