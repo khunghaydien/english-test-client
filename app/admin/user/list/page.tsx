@@ -3,7 +3,7 @@ import { CommonTable, TableHeaderColumn } from "@/components/common-table";
 import { toast } from "@/components/ui/use-toast";
 import { User } from "@/gql/graphql";
 import { DELETE_USER } from "@/graphql/mutation/user";
-import { GET_USERS } from "@/graphql/query/getUsers";
+import { GET_USERS } from "@/graphql/query/user";
 import { useMutation, useQuery } from "@apollo/client";
 import { MdDelete } from "react-icons/md";
 import ModalUserDetail from "../_component/modal-profile";
